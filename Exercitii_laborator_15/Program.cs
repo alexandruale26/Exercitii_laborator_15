@@ -111,45 +111,52 @@ namespace Exercitii_laborator_15
                 },
             };
 
+            if (studenti == null)
+            {
+                Console.WriteLine("Nu avem studenti");
+                return;
+            }
 
-            // 1. Afisati cel mai in varsta studentiGasiti de la Informatica
-            Console.WriteLine("1. Afisati cel mai in varsta studentiGasiti de la Informatica");
+            // 1. Afisati cel mai in varsta student de la Informatica
+            Console.WriteLine("1. Afisati cel mai in varsta student de la Informatica");
 
-            Console.WriteLine(studenti.Where(s => s.Specializare == Specializare.Informatica).
-                                       OrderBy(s => s.Varsta).
-                                       LastOrDefault());
+            Console.WriteLine(studenti.Where(s => s.Specializare == Specializare.Informatica)
+                                      .OrderBy(s => s.Varsta)
+                                      .LastOrDefault());
             Console.WriteLine();
 
 
-            // 2. Afisati cel mai tanar studentiGasiti • In mai multe moduri
-            Console.WriteLine("2. Afisati cel mai tanar studentiGasiti • In mai multe moduri");
+            // 2. Afisati cel mai tanar student, in mai multe moduri
+            Console.WriteLine("2. Afisati cel mai tanar student • In mai multe moduri");
 
             Console.WriteLine(studenti.OrderBy(s => s.Varsta).FirstOrDefault());
-            Console.WriteLine(studenti.FirstOrDefault(s => s.Varsta <= studenti.Min(s => s.Varsta)));
+
+            int varstaMin = studenti.Min(s => s.Varsta);
+            Console.WriteLine(studenti.FirstOrDefault(s => s.Varsta == varstaMin));
             Console.WriteLine(studenti.OrderByDescending(s => s.Varsta).LastOrDefault());
             Console.WriteLine();
 
 
-            // 3. Afisati in ordine crescatoare a varstei toti, studentii de la litere
-            Console.WriteLine("3. Afisati in ordine crescatoare a varstei toti, studentii de la litere");
+            // 3. Afisati in ordine crescatoare a varstei toti, studentii de la Litere
+            Console.WriteLine("3. Afisati in ordine crescatoare a varstei toti, studentii de la Litere");
 
-            foreach (Student student in studenti.Where(s => s.Specializare == Specializare.Litere).
-                                                OrderBy(s => s.Varsta)) { Console.WriteLine(student); }
+            foreach (Student student in studenti.Where(s => s.Specializare == Specializare.Litere)
+                                                .OrderBy(s => s.Varsta)) { Console.WriteLine(student); }
             Console.WriteLine();
 
 
-            // 4. Afisati primul studentiGasiti de la constructii cu varsta de peste 20 de ani
-            Console.WriteLine("4. Afisati primul studentiGasiti de la constructii cu varsta de peste 20 de ani");
+            // 4. Afisati primul student de la Constructii cu varsta de peste 20 de ani
+            Console.WriteLine("4. Afisati primul student de la Constructii cu varsta de peste 20 de ani");
 
-            Console.WriteLine(studenti.First(s => s.Specializare == Specializare.Constructii && s.Varsta > 20));
+            Console.WriteLine(studenti.FirstOrDefault(s => s.Specializare == Specializare.Constructii && s.Varsta > 20));
             Console.WriteLine();
 
 
             // 5. Afisati studentii avand varsta egala cu varsta medie a studentilor
             Console.WriteLine("5. Afisati studentii avand varsta egala cu varsta medie a studentilor");
 
-            foreach (Student student in studenti.Where(s => s.Varsta == (int)studenti.
-                                                 Average(s => s.Varsta))) { Console.WriteLine(student); }
+            double average = studenti.Average(s => s.Varsta);
+            foreach (Student student in studenti.Where(s => s.Varsta == (int)average)) { Console.WriteLine(student); }
             Console.WriteLine();
 
 
@@ -158,9 +165,9 @@ namespace Exercitii_laborator_15
             Console.WriteLine("6. Afisati in ordinea descrescatoare a varstei, si in ordinea alfabetica, dupa numele de \n" +
                               "familie si dupa numele mic, toti studentii cu varsta cuprinsa intre 18 si 35 de ani");
 
-            foreach (Student student in studenti.Where(s => s.Varsta >= 18 && s.Varsta <= 35).
-                                                 OrderByDescending(s => s.Varsta).ThenBy(s => s.Nume).
-                                                 ThenBy(s => s.Prenume)) { Console.WriteLine(student); }
+            foreach (Student student in studenti.Where(s => s.Varsta >= 18 && s.Varsta <= 35)
+                                                .OrderByDescending(s => s.Varsta).ThenBy(s => s.Nume)
+                                                .ThenBy(s => s.Prenume)) { Console.WriteLine(student); }
             Console.WriteLine();
 
 
@@ -188,11 +195,11 @@ namespace Exercitii_laborator_15
                  Studentii cu varsta de 25 de ani
             */
             Console.WriteLine("9. Folosind GroupBy, afisati toti studentii grupati in functie de varsta");
-            var studentiGrupati = studenti.GroupBy(s => s.Varsta, s => s, (grupVarsta, studentiGasiti) => new {GrupVarsta = grupVarsta, StudentiGasiti = studentiGasiti.ToList()});
+            var studentiGrupati = studenti.GroupBy(s => s.Varsta).Select(s => new {Varsta = s.Key, StudentiGasiti = s.ToList()});
 
             foreach (var rezultat in studentiGrupati)
             {
-                Console.WriteLine($"Studentii cu varsta de {rezultat.GrupVarsta} de ani");
+                Console.WriteLine($"Studentii cu varsta de {rezultat.Varsta} de ani");
                 rezultat.StudentiGasiti.ForEach(s => Console.WriteLine(s));
             }
         }
